@@ -1,0 +1,38 @@
+com.pdd.book.app-jetified-savedstate-1.1.0-0 C:\Users\andre\.gradle\caches\transforms-3\028da97c4d16582c6443477b6d58ec85\transformed\jetified-savedstate-1.1.0\res
+com.pdd.book.app-jetified-core-ktx-1.8.0-1 C:\Users\andre\.gradle\caches\transforms-3\0a90d6f8a3426d72d40abb770de8e7d8\transformed\jetified-core-ktx-1.8.0\res
+com.pdd.book.app-cardview-1.0.0-2 C:\Users\andre\.gradle\caches\transforms-3\0da7058a40aed3383179bac73aaa6bce\transformed\cardview-1.0.0\res
+com.pdd.book.app-jetified-startup-runtime-1.0.0-3 C:\Users\andre\.gradle\caches\transforms-3\0e7e0d02700fdbeab5782448b672ab04\transformed\jetified-startup-runtime-1.0.0\res
+com.pdd.book.app-jetified-play-services-base-18.0.0-4 C:\Users\andre\.gradle\caches\transforms-3\128c3e47d3c414d51930dc67519c59dd\transformed\jetified-play-services-base-18.0.0\res
+com.pdd.book.app-jetified-annotation-experimental-1.4.0-5 C:\Users\andre\.gradle\caches\transforms-3\216ab069f6a210364540729d5b178fa6\transformed\jetified-annotation-experimental-1.4.0\res
+com.pdd.book.app-jetified-play-services-basement-18.4.0-6 C:\Users\andre\.gradle\caches\transforms-3\4a1edf1ddab53a32087e461cb0e74244\transformed\jetified-play-services-basement-18.4.0\res
+com.pdd.book.app-jetified-play-services-ads-23.6.0-7 C:\Users\andre\.gradle\caches\transforms-3\4c4881e1ac8541b02d6e7da97802bfe0\transformed\jetified-play-services-ads-23.6.0\res
+com.pdd.book.app-coordinatorlayout-1.1.0-8 C:\Users\andre\.gradle\caches\transforms-3\4dd1ececaa6913c5344e18a016b0077f\transformed\coordinatorlayout-1.1.0\res
+com.pdd.book.app-jetified-emoji2-views-helper-1.0.0-9 C:\Users\andre\.gradle\caches\transforms-3\5848000fdade1b0ad735eee9d12cb9f1\transformed\jetified-emoji2-views-helper-1.0.0\res
+com.pdd.book.app-recyclerview-1.2.1-10 C:\Users\andre\.gradle\caches\transforms-3\5b31acdaf05abddf78d460c3f3b80390\transformed\recyclerview-1.2.1\res
+com.pdd.book.app-lifecycle-runtime-2.4.0-11 C:\Users\andre\.gradle\caches\transforms-3\5e31889335f1d929eaf8790445c07403\transformed\lifecycle-runtime-2.4.0\res
+com.pdd.book.app-transition-1.2.0-12 C:\Users\andre\.gradle\caches\transforms-3\60b9a5ff9a6334c59b6f9fb88fb49566\transformed\transition-1.2.0\res
+com.pdd.book.app-browser-1.8.0-13 C:\Users\andre\.gradle\caches\transforms-3\631289ecd47681cc4b7dc9973b6d65a3\transformed\browser-1.8.0\res
+com.pdd.book.app-jetified-ads-adservices-java-1.0.0-beta05-14 C:\Users\andre\.gradle\caches\transforms-3\6e30fb20e6d94ec0c3d634af45170ef7\transformed\jetified-ads-adservices-java-1.0.0-beta05\res
+com.pdd.book.app-appcompat-1.4.1-15 C:\Users\andre\.gradle\caches\transforms-3\7ca0372b7cb4ecc62d54cc36182de134\transformed\appcompat-1.4.1\res
+com.pdd.book.app-jetified-play-services-ads-lite-23.6.0-16 C:\Users\andre\.gradle\caches\transforms-3\815f14f930fc113a323ea432a4bdd85f\transformed\jetified-play-services-ads-lite-23.6.0\res
+com.pdd.book.app-work-runtime-2.7.0-17 C:\Users\andre\.gradle\caches\transforms-3\906a4894a04502e00c83e3caf684f146\transformed\work-runtime-2.7.0\res
+com.pdd.book.app-jetified-appcompat-resources-1.4.1-18 C:\Users\andre\.gradle\caches\transforms-3\9e943f8ec3051efb267fa404306d20c0\transformed\jetified-appcompat-resources-1.4.1\res
+com.pdd.book.app-constraintlayout-2.1.3-19 C:\Users\andre\.gradle\caches\transforms-3\a99c4829267d59eec02febdf4df59024\transformed\constraintlayout-2.1.3\res
+com.pdd.book.app-jetified-lifecycle-process-2.4.0-20 C:\Users\andre\.gradle\caches\transforms-3\b025636e35225827709d0fef8e0c2ac8\transformed\jetified-lifecycle-process-2.4.0\res
+com.pdd.book.app-lifecycle-viewmodel-2.3.1-21 C:\Users\andre\.gradle\caches\transforms-3\b0d8366e54ce6ff3190952fa85742543\transformed\lifecycle-viewmodel-2.3.1\res
+com.pdd.book.app-jetified-viewpager2-1.0.0-22 C:\Users\andre\.gradle\caches\transforms-3\c1047b197b10b3353d5e3e9d2585e0e8\transformed\jetified-viewpager2-1.0.0\res
+com.pdd.book.app-webkit-1.11.0-alpha02-23 C:\Users\andre\.gradle\caches\transforms-3\c41e05741ab36afa76b8119d44fa9531\transformed\webkit-1.11.0-alpha02\res
+com.pdd.book.app-fragment-1.3.6-24 C:\Users\andre\.gradle\caches\transforms-3\c60db0ababda0fd27a11999b6ac41acc\transformed\fragment-1.3.6\res
+com.pdd.book.app-drawerlayout-1.1.1-25 C:\Users\andre\.gradle\caches\transforms-3\e14569164320b2792bc6712351cddad2\transformed\drawerlayout-1.1.1\res
+com.pdd.book.app-jetified-emoji2-1.0.0-26 C:\Users\andre\.gradle\caches\transforms-3\e5dbba497e9735fd2457b7688f6820f2\transformed\jetified-emoji2-1.0.0\res
+com.pdd.book.app-material-1.5.0-27 C:\Users\andre\.gradle\caches\transforms-3\ec1881ad0f251b848dab279b381ad493\transformed\material-1.5.0\res
+com.pdd.book.app-core-1.8.0-28 C:\Users\andre\.gradle\caches\transforms-3\f14ed97d16b3ab4b758c297c5ad331a0\transformed\core-1.8.0\res
+com.pdd.book.app-jetified-ads-adservices-1.0.0-beta05-29 C:\Users\andre\.gradle\caches\transforms-3\f5aa0b0c0ad6af96d3c6f67821e22b11\transformed\jetified-ads-adservices-1.0.0-beta05\res
+com.pdd.book.app-pngs-30 D:\Applications\Others Android\WorkAppsAndroidStudio\PDDBook\app\build\generated\res\pngs\debug
+com.pdd.book.app-resValues-31 D:\Applications\Others Android\WorkAppsAndroidStudio\PDDBook\app\build\generated\res\resValues\debug
+com.pdd.book.app-rs-32 D:\Applications\Others Android\WorkAppsAndroidStudio\PDDBook\app\build\generated\res\rs\debug
+com.pdd.book.app-mergeDebugResources-33 D:\Applications\Others Android\WorkAppsAndroidStudio\PDDBook\app\build\intermediates\incremental\debug\mergeDebugResources\merged.dir
+com.pdd.book.app-mergeDebugResources-34 D:\Applications\Others Android\WorkAppsAndroidStudio\PDDBook\app\build\intermediates\incremental\debug\mergeDebugResources\stripped.dir
+com.pdd.book.app-merged_res-35 D:\Applications\Others Android\WorkAppsAndroidStudio\PDDBook\app\build\intermediates\merged_res\debug
+com.pdd.book.app-debug-36 D:\Applications\Others Android\WorkAppsAndroidStudio\PDDBook\app\src\debug\res
+com.pdd.book.app-main-37 D:\Applications\Others Android\WorkAppsAndroidStudio\PDDBook\app\src\main\res

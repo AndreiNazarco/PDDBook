@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llDialogIndex"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+    
+    <ScrollView
+    	android:id="@+id/SCROLLER_ID_A"
+    	android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+    	android:scrollbars="vertical"
+    	android:fillViewport="true"
+    	android:layout_weight="1"> 
+    	
+    	<LinearLayout
+        	android:id="@+id/llDialog"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:orientation="vertical"
+        	android:layout_weight="1"
+        	android:layout_margin="10dp">
+     	</LinearLayout>  
+	</ScrollView>
+
+    
+</LinearLayout>

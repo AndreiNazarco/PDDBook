@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="UnitId">ca-app-pub-5682735460136333/1252610003</string>
+    
+    <string name="app_name">RCR Moldova</string>
+    <string name="app_name_full">Regulamentul circulaţiei rutiere\nRepublica Moldova</string>
+    <string name="language">ro</string>
+    
+    <string name="main_book_ru_1">Правила дорожного движения</string>
+    <string name="main_book_ro_1">Regulamentul circulaţiei rutiere</string>
+    <string name="main_book_ru_2">с кратким коментарием</string>
+    <string name="main_book_ro_2">comentat succint</string>
+    <string name="main_book_c">700 de întrebări și teste (tematice)</string>
+
+    <string name="quit">Ieșire</string>
+    <string name="back">Inapoi</string>
+    <string name="size">Font</string>
+    <string name="day_night">Zi/Noapte</string>
+    
+    <string name="congif">Configurație</string>
+    <string name="day">Zi</string>
+    <string name="night">Noapte</string>
+    <string name="example_text">Exemplu de text</string>
+    <string name="font_size">Dimensiunea fontului</string>
+    <string name="less">mai puțin</string>
+    <string name="more">mai mult</string>
+    <string name="image_not_found">Imaginea nu a fost găsit</string>
+    <string name="recipes_lang_start">Limbă / Язык</string>
+    <string name="recipes_lang">Limbă</string>
+    
+    <string name="sql_lite_exception">Reporniţi aplicația.</string>
+    <string name="recommendation">Actualizarea bazei de date.</string>   
+    
+    <string name="about">Despre program</string>    
+    <string name="about_info">Regulamentul circulaţiei rutiere\n comentat succint\nRepublica Moldova\n\nToate întrebările, comentariile și sugestiile cu privire la aplicarea pot fi depuse prin e-mail:\nandrei.nazarco@gmail.com\n\n</string>
+    
+    <string name="description">Ediție didactică</string>
+    <string name="description_all">700 de întrebări și teste (tematice) pentru pregătirea de examenul teoretic și obținerea permisului de conducere</string>
+    <string name="pdd_moldova_free">\nPoate fi descarcat de pe referinte:</string>
+     
+    <string name="yes">Da</string>
+    <string name="close">Închide</string> 
+    
+    
+</resources>

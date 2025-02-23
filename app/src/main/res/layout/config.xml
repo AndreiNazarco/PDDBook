@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="#59a214"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/iibBackConfig"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:background="#59a214"
+            android:contentDescription="@string/back"
+            android:scaleType="fitCenter"
+            android:src="@drawable/back" />
+
+        <TextView
+            android:id="@+id/itvNameConfig"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginRight="50dp"
+            android:layout_weight="1"
+            android:background="#59a214"
+            android:gravity="center_vertical|center_horizontal"
+            android:text="@string/congif"
+            android:textColor="#ffffff"
+            android:textSize="15dp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/idScrollOption"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:scrollbars="vertical" >
+
+        <LinearLayout
+            android:id="@+id/illLangConfig"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/illExampleText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/itvExampleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/example_text"
+                    android:textColor="#000000" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/itvFontSize"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:background="#cbe5b3"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/font_size"
+                android:textColor="#605a5d" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/itvTextLess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:text="@string/less"
+                    android:textColor="#605a5d"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/itvTextMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/more"
+                    android:textColor="#605a5d"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
+            <SeekBar
+                android:id="@+id/isbTextSize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="30"
+                />
+
+            <TextView
+                android:id="@+id/itvDayNight"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:background="#cbe5b3"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/day_night"
+                android:textColor="#605a5d" />
+
+            <RadioGroup
+                android:id="@+id/rgGravity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/irbDayDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="@string/day"
+                    android:textColor="#000000"
+                    android:buttonTint="#cbe5b3">
+                </RadioButton>
+
+                <RadioButton
+                    android:id="@+id/idbNightDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="15dp"
+                    android:text="@string/night"
+                    android:textColor="#000000"
+                    android:buttonTint="#cbe5b3">
+                </RadioButton>
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/itvLanguageConfig"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="#cbe5b3"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/recipes_lang"
+                android:textColor="#605a5d" />
+
+            <LinearLayout
+                android:id="@+id/idLayoutOption2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal" >
+
+                <ImageButton
+                    android:id="@+id/iibMainLanguageRomanian"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_margin="5dp"
+                    android:background="#00000000"
+                    android:contentDescription="@string/recipes_lang"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/flag_moldova" />
+
+                <ImageButton
+                    android:id="@+id/iibMainLanguageRussian"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_margin="5dp"
+                    android:background="#00000000"
+                    android:contentDescription="@string/recipes_lang"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/flag_russia" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/itvAboutConfig"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:background="#cbe5b3"
+                android:gravity="center_vertical|center_horizontal"
+                android:text="@string/about"
+                android:textColor="#605a5d" />
+
+            <TextView
+                android:id="@+id/itvAboutInfoConfig"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:text="@string/about_info"
+                android:textColor="#000000" />
+
+            <LinearLayout
+                android:id="@+id/illRCRConfig"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:id="@+id/iivRCRConfig"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center"
+                    android:src="@drawable/image_book" >
+                </ImageView>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/illPubConfig"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal" >
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/iAdViewConfig"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/UnitId" >
+        </com.google.android.gms.ads.AdView>
+
+    </LinearLayout>
+
+</LinearLayout>

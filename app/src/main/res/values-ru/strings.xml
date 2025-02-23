@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="UnitId">ca-app-pub-5682735460136333/1252610003</string>
+
+    <string name="app_name">ПДД Молдова</string>
+    <string name="app_name_full">Правила дорожного движения\nРеспублика Молдова</string>
+    <string name="language">ru</string>
+    
+    <string name="main_book_ru_1">Правила дорожного движения</string>
+    <string name="main_book_ro_1">Regulamentul circulaţiei rutiere</string>
+    <string name="main_book_ru_2">с кратким коментарием</string>
+    <string name="main_book_ro_2">comentat succint</string>
+    <string name="main_book_c">700 экзаменационных задач (тематических)</string>
+    
+    <string name="quit">Выйти</string>
+    <string name="back">Назад</string>
+    <string name="size">Шрифт</string>
+    <string name="day_night">День/Ночь</string>
+    
+    <string name="congif">Конфигурация</string>
+    <string name="day">День</string>
+    <string name="night">Ночь</string>
+    <string name="example_text">Пример текста</string>
+    <string name="font_size">Размер шрифта</string>
+    <string name="less">меньше</string>
+    <string name="more">больше</string>
+    <string name="image_not_found">Изображение не найдено</string>
+    <string name="recipes_lang_start">Limbă / Язык</string>   
+    <string name="recipes_lang">Язык</string> 
+    
+    <string name="sql_lite_exception">Перезагрузите приложение.</string>
+    <string name="recommendation">Обновление базы.</string>
+    
+    <string name="about">О программе</string>
+    <string name="about_info">Правила дорожного движения\nс кратким коментарием\nРеспублика Молдова\n\nВсе вопросы, замечания и пожелания по приложению можно присылать на почту:\nandrei.nazarco@gmail.com\n\n</string>
+    
+    <string name="description">Учебное издание</string>
+    <string name="description_all">700 экзаменационных (тематических) задач для подготовки к теоретическому экзамену на получение водительского удостоверения </string>
+    <string name="pdd_moldova_free">\nМожно скачать по ссылки:</string>
+   
+    <string name="yes">Да</string>
+    <string name="close">Закрыть</string>   
+    
+    
+</resources>
+
