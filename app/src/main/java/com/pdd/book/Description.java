@@ -7,6 +7,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -142,7 +143,8 @@ public class Description extends Activity implements OnClickListener  {
 		catch (Exception $e) { }
 	}
 
-	public void LoadDateToDescription()
+	@SuppressLint("Range")
+    public void LoadDateToDescription()
 	{
 		SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
 		isLanguage 				  = myPrefs.getString("isLanguage", "ro");

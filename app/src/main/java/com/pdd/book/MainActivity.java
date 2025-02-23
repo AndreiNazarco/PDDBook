@@ -6,6 +6,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -41,7 +42,8 @@ public class MainActivity extends Activity implements OnClickListener {
 	Resources    	localResources;
 
 	/** Called when the activity is first created. */
-	@Override
+	@SuppressLint("Range")
+    @Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE); //скрываем заголовок

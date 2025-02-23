@@ -9,6 +9,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -136,7 +137,8 @@ public class Cuprins  extends Activity implements OnClickListener {
 		catch (Exception $e) { }
 	}
 
-	private void LoadDateListView()
+	@SuppressLint("Range")
+    private void LoadDateListView()
 	{
 		SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
 		isLanguage = myPrefs.getString("isLanguage", "ro");
