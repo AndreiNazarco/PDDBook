@@ -37,7 +37,9 @@
     <string name="description">Учебное издание</string>
     <string name="description_all">700 экзаменационных (тематических) задач для подготовки к теоретическому экзамену на получение водительского удостоверения </string>
     <string name="pdd_moldova_free">\nМожно скачать по ссылки:</string>
-   
+
+    <string name="subject_empty">Данная категория пуста!</string>
+
     <string name="yes">Да</string>
     <string name="close">Закрыть</string>   
     

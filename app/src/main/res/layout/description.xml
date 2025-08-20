@@ -5,7 +5,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:keepScreenOn="true"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:id="@+id/illCaptionDesc"
@@ -18,13 +19,13 @@
 
         <ImageButton
             android:id="@+id/iibBackDesc"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:background="#59a214"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
             android:contentDescription="@string/back"
             android:scaleType="fitCenter"
-            android:src="@drawable/back" />
+            android:src="@drawable/ic_left"
+            ads:tint="@color/cDayBG" />
 
         <TextView
             android:id="@+id/itvCaptionDesc"
@@ -42,34 +43,45 @@
         <ImageButton
             android:id="@+id/iibConfigDesc"
             android:layout_width="50dp"
-            android:layout_height="30dp"
+            android:layout_height="match_parent"
             android:layout_margin="9dp"
             android:background="#59a214"
             android:scaleType="fitCenter"
-            android:src="@drawable/config" />
+            android:src="@drawable/settings" />
     </LinearLayout>
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/searchPanel"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:padding="8dp"-->
+<!--        android:visibility="visible">-->
+
+<!--        <EditText-->
+<!--            android:id="@+id/etSearch"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="Поиск"-->
+<!--            android:imeOptions="actionSearch" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/btnPrev"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="⟨" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/btnNext"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="⟩" />-->
+<!--    </LinearLayout>-->
 
     <WebView
         android:id="@+id/iwvHTML"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1" />
-
-    <LinearLayout
-        android:id="@+id/illPubDesc"
-        android:layout_width="320dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal" >
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/iAdViewDesc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/UnitId" >
-        </com.google.android.gms.ads.AdView>
-
-    </LinearLayout>
-
 </LinearLayout>

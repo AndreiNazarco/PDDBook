@@ -1,11 +1,8 @@
 package com.pdd.book;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.util.Locale;
-
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -21,16 +18,23 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.BitmapFactory.Options;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,14 +50,23 @@ public class Description extends Activity implements OnClickListener  {
 	public static int 		text_size			= 10;
 	public static int 		isCaption			= 0;
 
+	private float x1, x2;
+	private final int MIN_DISTANCE = 150; // минимальная дистанция для свайпа
+	private GestureDetector gestureDetector;
+
 	ImageButton  	ibBackDesc;
 	ImageButton  	ibConfigDesc;
 
 	TextView     	tvCaptionDesc;
+
+	EditText 		etSearch;
+	Button 			btnNext;
+	Button 			btnPrev;
+	LinearLayout 	searchPanel;
+
 	WebView 	 	webView;
 
 	LinearLayout	llPubDesc;
-	AdView 			AdViewDesc;
 
 	DBHelper 	 	dbHelper;
 
@@ -77,70 +90,31 @@ public class Description extends Activity implements OnClickListener  {
 		ibBackDesc			= (ImageButton) 	findViewById(R.id.iibBackDesc);
 		ibConfigDesc		= (ImageButton) 	findViewById(R.id.iibConfigDesc);
 
+//		etSearch 			= (EditText)		findViewById(R.id.etSearch);
+//		btnNext 			= (Button)			findViewById(R.id.btnNext);
+//		btnPrev 			= (Button)			findViewById(R.id.btnPrev);
+//		searchPanel 		= (LinearLayout)	findViewById(R.id.searchPanel);
+
 		webView 	      	= (WebView) 		findViewById(R.id.iwvHTML);
 
-		llPubDesc	 		= (LinearLayout) 	findViewById(R.id.illPubDesc);
+		gestureDetector = new GestureDetector(this, new GestureListener());
+		webView.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
 
 		// Присваиваем обработчик кнопкам
 		ibBackDesc.setOnClickListener(this);
 		ibConfigDesc.setOnClickListener(this);
 
-		// Показати или скрыть рекламу
-		VisibleOrGonePub();
+//		btnNext.setOnClickListener(v -> webView.findNext(true));
+//		btnPrev.setOnClickListener(v -> webView.findNext(false));
+
+//		etSearch.setOnEditorActionListener((v, actionId, event) -> {
+//			String text = etSearch.getText().toString().trim();
+//			searchInWebView(text);
+//			return true;
+//		});
 
 		// Загрузка данных
 		LoadDateToDescription();
-	}
-
-	public void VisibleOrGonePub()
-	{
-		try
-		{
-			SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
-			isViewPub = myPrefs.getBoolean("isViewPub", true); // true - показать рекламу, false -  скрыти рекламу
-
-			if(isViewPub == true)
-			{
-				llPubDesc.setVisibility(View.GONE);
-
-				// Поиск AdView в качестве ресурса и загрузка запроса.
-				AdViewDesc = (AdView)this.findViewById(R.id.iAdViewDesc);
-				AdRequest adRequest = new AdRequest.Builder().build();
-				AdViewDesc.loadAd(adRequest);
-
-				AdViewDesc.setAdListener(new AdListener()
-				{
-					// Вызывается при получении объявление.
-					public void onAdLoaded()
-					{
-						llPubDesc.setVisibility(View.VISIBLE);
-					}
-
-					// Вызывается, когда пользователь собирается вернуться в приложение после нажатия на объявление
-					public void onAdClosed()
-					{
-						llPubDesc.setVisibility(View.GONE);
-
-						if(AdViewDesc != null) {AdViewDesc.destroy();}
-
-						isViewPub = false;
-						SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
-						Editor eddPub = myPrefs.edit();
-						eddPub.putBoolean("isViewPub", isViewPub);
-						eddPub.commit();
-					}
-
-					// Вызывается, когда объявление оставляет приложение (например, пойти в браузере).
-					public void onAdLeftApplication()
-					{}
-				});
-			}
-			else
-			{
-				llPubDesc.setVisibility(View.GONE);
-			}
-		}
-		catch (Exception $e) { }
 	}
 
 	@SuppressLint("Range")
@@ -189,252 +163,240 @@ public class Description extends Activity implements OnClickListener  {
 		db.close();
 		tvCaptionDesc.setText(strValue);
 
-		try
-		{
-			try
-			{
-				webView.setWebViewClient(new WebViewClient()
-				{
-					private Bitmap bitmap;
+		try {
 
-					@Override
-					public boolean shouldOverrideUrlLoading(WebView view, String url)
-					{
-						//Log.d("Resolution", "shouldOverrideUrlLoading: " + url);
-						try
-						{
-							int exist = 0;
-							String img = "", str = "", strValue = "";
-							LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			webView.setWebViewClient(new WebViewClient() {
+				private Bitmap bitmap;
 
-							if((url.trim().compareTo("file:///android_res/drawable/previous") == 0)||(url.trim().compareTo("file:///android_res/drawable/next") == 0))
-							{
-								if(url.trim().compareTo("file:///android_res/drawable/previous") == 0)
-								{
-									isCaption = isCaption - 1;
+				@Override
+				public void onPageFinished(WebView view, String url) {
+					applyThemeToWebView();
+				}
 
-									SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
-									Editor eddPub = myPrefs.edit();
-									eddPub.putInt("isCaption", isCaption);
-									eddPub.commit();
+				@Override
+				public boolean shouldOverrideUrlLoading(WebView view, String url) {
+					//Log.d("Resolution", "shouldOverrideUrlLoading: " + url);
+					try {
+						Uri uri = Uri.parse(url);
+						String lastPath = uri.getLastPathSegment();
 
-									LoadDateToDescription();
-								}
+						if ("next".equalsIgnoreCase(lastPath)) {
+							isCaption++;
+							saveCaptionIndex();
+							LoadDateToDescription();
+							return true;
+						} else if ("previous".equalsIgnoreCase(lastPath)) {
+							isCaption--;
+							saveCaptionIndex();
+							LoadDateToDescription();
+							return true;
+						}
 
-								if(url.trim().compareTo("file:///android_res/drawable/next") == 0)
-								{
-									isCaption = isCaption + 1;
+						int exist = 0;
+						String img = "", str = "", strValue = "";
+						LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
-									SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
-									Editor eddPub = myPrefs.edit();
-									eddPub.putInt("isCaption", isCaption);
-									eddPub.commit();
+						if ((url.trim().compareTo("file:///android_res/drawable/previous") == 0) || (url.trim().compareTo("file:///android_res/drawable/next") == 0)) {
+//							if (url.trim().compareTo("file:///android_res/drawable/previous") == 0) {
+//								isCaption = isCaption - 1;
+//
+//								SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
+//								Editor eddPub = myPrefs.edit();
+//								eddPub.putInt("isCaption", isCaption);
+//								eddPub.commit();
+//
+//								LoadDateToDescription();
+//							}
+//
+//							if (url.trim().compareTo("file:///android_res/drawable/next") == 0) {
+//								isCaption = isCaption + 1;
+//
+//								SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
+//								Editor eddPub = myPrefs.edit();
+//								eddPub.putInt("isCaption", isCaption);
+//								eddPub.commit();
+//
+//								LoadDateToDescription();
+//							}
+						} else {
+							final Dialog dialog = new Dialog(Description.this);
+							dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+							dialog.setContentView(R.layout.dialog);
 
-									LoadDateToDescription();
-								}
+							LinearLayout lDialog = (LinearLayout) dialog.findViewById(R.id.llDialog);
+
+							LinearLayout lDialogIndex = (LinearLayout) dialog.findViewById(R.id.llDialogIndex);
+
+							if (day_night == false) {
+								lDialogIndex.setBackgroundColor(Color.parseColor("#000000"));
+							} else {
+								lDialogIndex.setBackgroundColor(Color.parseColor("#ffffff"));
 							}
-							else
-							{
-								final Dialog dialog = new Dialog(Description.this);
-								dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-								dialog.setContentView(R.layout.dialog);
 
-								LinearLayout lDialog = (LinearLayout) dialog.findViewById(R.id.llDialog);
-
-								LinearLayout lDialogIndex = (LinearLayout) dialog.findViewById(R.id.llDialogIndex);
-
-								if(day_night == false)
-								{
-									lDialogIndex.setBackgroundColor(Color.parseColor("#000000"));
-								}
-								else
-								{
-									lDialogIndex.setBackgroundColor(Color.parseColor("#ffffff"));
-								}
-
-								for(int I = 0; I <= url.length(); I ++)
-								{
-									if((url.length() - I >= 6)&&(url.substring(I, I + 6).toLowerCase().compareTo("image_") 	== 0))
-									{
-										//-- Картинка если ести
-										for(int J = I; J <= url.length(); J ++)
-										{
-											if((url.length() - J >= 1)&&(url.substring(J, J + 1).toLowerCase().compareTo(";") 	== 0))
-											{
-												img = url.substring(I, J);
-												//Log.d("Resolution", "img:" + img + ":");
-												exist ++;
-												break;
-											}
+							for (int I = 0; I <= url.length(); I++) {
+								if ((url.length() - I >= 6) && (url.substring(I, I + 6).toLowerCase().compareTo("image_") == 0)) {
+									//-- Картинка если ести
+									for (int J = I; J <= url.length(); J++) {
+										if ((url.length() - J >= 1) && (url.substring(J, J + 1).toLowerCase().compareTo(";") == 0)) {
+											img = url.substring(I, J);
+											//Log.d("Resolution", "img:" + img + ":");
+											exist++;
+											break;
 										}
+									}
 
-										try
-										{
-											BitmapFactory.Options opts = new Options();
-											opts.inPurgeable = true;
-											bitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(img.trim(), "drawable", getPackageName()), opts);
+									try {
+										BitmapFactory.Options opts = new Options();
+										opts.inPurgeable = true;
+										bitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(img.trim(), "drawable", getPackageName()), opts);
 
 											/*int idImage = getResources().getIdentifier(img.trim(), "drawable", getPackageName());
 			          						  bitmap = BitmapFactory.decodeResource(getResources(), idImage);*/
-										}
-										catch (Exception $e)
-										{
-											bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.black);
-										}
-
-										ImageView newImage = new ImageView(Description.this);
-										newImage.setImageBitmap(this.bitmap);
-										newImage.setScaleType(ScaleType.FIT_CENTER);
-										newImage.setPadding(0, 10, 0, 0);
-										lDialog.addView(newImage, lParams);
+									} catch (Exception $e) {
+										bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.black);
 									}
 
-									if((url.length() - I >= 12)&&(url.substring(I, I + 12).toLowerCase().compareTo("indicatoare_") 	== 0))
-									{
-										//-- Картинка если ести
-										for(int J = I; J <= url.length(); J ++)
-										{
-											if(((url.length() - J >= 1)&&(url.substring(J, J + 1).toLowerCase().compareTo(";") 	== 0)) || (J == url.length()))
-											{
-												str = url.substring(I, J);
-												//Log.d("Resolution", "str: " + str);
-												exist ++;
-												break;
-											}
-										}
-
-										// Подключаемся к БД
-										SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-										String selectQuery = " SELECT name " +
-												" FROM indicatoare " +
-												" WHERE language like '" + localResources.getString(R.string.language).trim() + "' " +
-												"   AND code like '" + str + "' ";
-
-										// Данные из базы --
-										Cursor cIndicatoare = db.rawQuery(selectQuery, null);
-
-										// Ставим позицию курсора на первую строку выборки
-										// если в выборке нет строк, вернется false
-										strValue = "";
-										if (cIndicatoare.moveToFirst())
-										{
-											do
-											{
-												strValue = cIndicatoare.getString(cIndicatoare.getColumnIndex("name")).replace("\\n", "\n");
-												// Переход на следующую строку
-												// а если следующей нет (текущая - последняя), то false - выходим из цикла
-											} while (cIndicatoare.moveToNext());
-										}
-										cIndicatoare.close();
-										db.close();
-
-										TextView newTextRasp = new TextView(Description.this);
-										newTextRasp.setText(strValue);
-										newTextRasp.setPadding(0, 0, 10, 0);
-
-										if(day_night == false)
-										{
-											newTextRasp.setTextColor(Color.parseColor("#ffffff"));
-										}
-										else
-										{
-											newTextRasp.setTextColor(Color.parseColor("#000000"));
-										}
-										lDialog.addView(newTextRasp, lParams);
-									}
+									ImageView newImage = new ImageView(Description.this);
+									newImage.setImageBitmap(this.bitmap);
+									newImage.setScaleType(ScaleType.FIT_CENTER);
+									newImage.setPadding(0, 10, 0, 0);
+									lDialog.addView(newImage, lParams);
 								}
 
-
-								if(exist == 0)
-								{
-									TextView newTextRasp = new TextView(Description.this);
-									newTextRasp.setText(localResources.getString(R.string.image_not_found));
-
-									if(day_night == false)
-									{
-										newTextRasp.setTextColor(Color.parseColor("#ffffff"));
+								if ((url.length() - I >= 12) && (url.substring(I, I + 12).toLowerCase().compareTo("indicatoare_") == 0)) {
+									//-- Картинка если ести
+									for (int J = I; J <= url.length(); J++) {
+										if (((url.length() - J >= 1) && (url.substring(J, J + 1).toLowerCase().compareTo(";") == 0)) || (J == url.length())) {
+											str = url.substring(I, J);
+											//Log.d("Resolution", "str: " + str);
+											exist++;
+											break;
+										}
 									}
-									else
-									{
+
+									// Подключаемся к БД
+									SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+									String selectQuery = " SELECT name " +
+											" FROM indicatoare " +
+											" WHERE language like '" + localResources.getString(R.string.language).trim() + "' " +
+											"   AND code like '" + str + "' ";
+
+									// Данные из базы --
+									Cursor cIndicatoare = db.rawQuery(selectQuery, null);
+
+									// Ставим позицию курсора на первую строку выборки
+									// если в выборке нет строк, вернется false
+									strValue = "";
+									if (cIndicatoare.moveToFirst()) {
+										do {
+											strValue = cIndicatoare.getString(cIndicatoare.getColumnIndex("name")).replace("\\n", "\n");
+											// Переход на следующую строку
+											// а если следующей нет (текущая - последняя), то false - выходим из цикла
+										} while (cIndicatoare.moveToNext());
+									}
+									cIndicatoare.close();
+									db.close();
+
+									TextView newTextRasp = new TextView(Description.this);
+									newTextRasp.setText(strValue);
+									newTextRasp.setPadding(0, 0, 10, 0);
+
+									if (day_night == false) {
+										newTextRasp.setTextColor(Color.parseColor("#ffffff"));
+									} else {
 										newTextRasp.setTextColor(Color.parseColor("#000000"));
 									}
-
 									lDialog.addView(newTextRasp, lParams);
 								}
-
-								TextView newTextNull = new TextView(Description.this);
-								newTextNull.setText("   ");
-								lDialog.addView(newTextNull, lParams);
-
-								Button newButton1 = new Button(Description.this);
-								newButton1.setText(localResources.getString(R.string.close));
-
-								if(day_night == false)
-								{
-									newButton1.setTextColor(Color.parseColor("#ffffff"));
-								}
-								else
-								{
-									newButton1.setTextColor(Color.parseColor("#000000"));
-								}
-
-								newButton1.setOnClickListener(new OnClickListener()
-								{
-									public void onClick(View v)
-									{
-										dialog.dismiss();
-									}
-								});
-								lDialogIndex.addView(newButton1, lParams);
-
-								dialog.show();
 							}
-						}
-						catch(Exception $e) { }
 
-						return true;
+
+							if (exist == 0) {
+								TextView newTextRasp = new TextView(Description.this);
+								newTextRasp.setText(localResources.getString(R.string.image_not_found));
+
+								if (day_night == false) {
+									newTextRasp.setTextColor(Color.parseColor("#ffffff"));
+								} else {
+									newTextRasp.setTextColor(Color.parseColor("#000000"));
+								}
+
+								lDialog.addView(newTextRasp, lParams);
+							}
+
+							TextView newTextNull = new TextView(Description.this);
+							newTextNull.setText("   ");
+							lDialog.addView(newTextNull, lParams);
+
+							Button newButton1 = new Button(Description.this);
+							newButton1.setText(localResources.getString(R.string.close));
+
+							if (day_night == false) {
+								newButton1.setTextColor(Color.parseColor("#ffffff"));
+							} else {
+								newButton1.setTextColor(Color.parseColor("#000000"));
+							}
+
+							newButton1.setOnClickListener(new OnClickListener() {
+								public void onClick(View v) {
+									dialog.dismiss();
+								}
+							});
+
+							// Создаем параметры макета с отступами
+							LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+									LinearLayout.LayoutParams.MATCH_PARENT,
+									LinearLayout.LayoutParams.WRAP_CONTENT
+							);
+							layoutParams.setMargins(30, 0, 30, 20); // лево, верх, право, низ
+							newButton1.setLayoutParams(layoutParams);
+							lDialogIndex.addView(newButton1, layoutParams);
+
+							dialog.show();
+						}
+					} catch (Exception $e) {
 					}
-				});
-			}
-			catch(Exception $e) { }
+
+					return true;
+				}
+			});
 
 			WebSettings settings = webView.getSettings();
 			settings.setDefaultFontSize(text_size);
-
-			if(day_night == false)
-			{
-				webView.setBackgroundColor(Color.parseColor("#000000"));
-			}
-			else
-			{
-				webView.setBackgroundColor(Color.parseColor("#ffffff"));
-			}
-
-			webView.getSettings().setAllowFileAccess(true);
-			webView.getSettings().setJavaScriptEnabled(true);
-			webView.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
+			webView.setBackgroundColor(day_night ? Color.WHITE : Color.BLACK);
+			settings.setAllowFileAccess(true);
+			settings.setJavaScriptEnabled(true);
+			settings.setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
 
 			//-- Open file html assets - read and convert to string
-			InputStream is = getAssets().open(isLanguage + "_" + String.format("%03d", Integer.valueOf(isCaption)) + ".xhtml");
+			InputStream is = getAssets().open(isLanguage + "_" + String.format("%03d", isCaption) + ".xhtml");
 			int size = is.available();
-
 			byte[] buffer = new byte[size];
 			is.read(buffer);
 			is.close();
-
-			if(day_night == false)
-				webView.loadDataWithBaseURL("file:///android_res/drawable/", new String(buffer).replace("<head>", "<head><style type=\"text/css\">body{color: #ffffff; background-color: #000000;}</style>"), "text/html", "utf-8", null);
-			else
-				webView.loadDataWithBaseURL("file:///android_res/drawable/", new String(buffer).replace("<head>", "<head><style type=\"text/css\">body{color: #000000; background-color: #ffffff;}</style>"), "text/html", "utf-8", null);
-			//dedcc3
+			String content = new String(buffer);
+			content = content.replace("<head>", "<head><style type=\"text/css\">body{color: " + (day_night ? "#000000" : "#ffffff") + "; background-color: " + (day_night ? "#ffffff" : "#000000") + ";}</style>");
+			webView.loadDataWithBaseURL("file:///android_res/drawable/", content, "text/html", "utf-8", null);
 		}
 		catch (Exception $e){}
 	}
 
+	private void saveCaptionIndex() {
+		SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
+		Editor eddPub = myPrefs.edit();
+		eddPub.putInt("isCaption", isCaption);
+		eddPub.apply();
+	}
+
+	private void applyThemeToWebView() {
+		String js = "document.body.style.backgroundColor = '" + (day_night ? "#ffffff" : "#000000") + "';" +
+				"document.body.style.color = '" + (day_night ? "#000000" : "#ffffff") + "';";
+		webView.evaluateJavascript(js, null);
+	}
+
 	@Override
-	public void onBackPressed()
-	{
+	public void onBackPressed() {
 		finish();
 		overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
 	}
@@ -470,8 +432,7 @@ public class Description extends Activity implements OnClickListener  {
 		switch (v.getId())
 		{
 			case R.id.iibBackDesc:
-				finish();
-				overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
+				onBackPressed();
 				break;
 
 			case R.id.iibConfigDesc:
@@ -481,7 +442,6 @@ public class Description extends Activity implements OnClickListener  {
 				overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);
 				break;
 		}
-
 	}
 
 	@Override
@@ -489,5 +449,86 @@ public class Description extends Activity implements OnClickListener  {
 	{
 		LoadDateToDescription();
 		super.onResume();
+	}
+
+	private class GestureListener extends GestureDetector.SimpleOnGestureListener {
+		private static final int SWIPE_THRESHOLD = 100;
+		private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+
+		@Override
+		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+			float diffX = e2.getX() - e1.getX();
+			float diffY = e2.getY() - e1.getY();
+
+			if (Math.abs(diffX) > Math.abs(diffY)) {
+				if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+					if (diffX > 0) {
+						if (isCaption > 0) {
+							isCaption--;
+							saveCaptionIndex();
+							LoadDateToDescription();
+						}
+					} else {
+						if (isCaption < 35) {
+							isCaption++;
+							saveCaptionIndex();
+							LoadDateToDescription();
+						}
+					}
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+
+	public void searchInWebView2(String text) {
+		if (text == null || text.trim().isEmpty()) return;
+		webView.findAllAsync(text);
+		webView.setFindListener((activeMatchOrdinal, numberOfMatches, isDoneCounting) -> {
+			if (numberOfMatches > 0) {
+				// можно показать UI с результатами
+			}
+		});
+	}
+
+
+	private void searchInWebView3(String query) {
+		if (query == null || query.isEmpty()) return;
+		webView.findAllAsync(query);
+		try {
+			Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
+			m.invoke(webView, true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void searchInWebView(String query) {
+		if (query == null || query.trim().isEmpty()) return;
+
+		webView.findAllAsync(query);
+
+		webView.setFindListener((activeMatchOrdinal, numberOfMatches, isDoneCounting) -> {
+			if (isDoneCounting && numberOfMatches > 0) {
+				webView.findNext(true); // переходим к первому совпадению
+			}
+		});
+
+		try {
+			Method m = WebView.class.getMethod("setFindIsUp", Boolean.TYPE);
+			m.invoke(webView, true); // только для отображения UI-индикатора (до Android 8.0)
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+	public void searchNext() {
+		webView.findNext(true);
+	}
+
+	public void searchPrevious() {
+		webView.findNext(false);
 	}
 }

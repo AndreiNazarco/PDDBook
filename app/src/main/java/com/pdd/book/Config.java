@@ -2,10 +2,6 @@ package com.pdd.book;
 
 import java.util.Locale;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -52,7 +48,6 @@ public class Config extends Activity implements OnClickListener, SeekBar.OnSeekB
 	TextView		tvAboutInfoConfig;
 
 	LinearLayout	llPubConfig;
-	AdView 			AdViewConfig;
 
 	Resources   	localResources;
 
@@ -87,8 +82,6 @@ public class Config extends Activity implements OnClickListener, SeekBar.OnSeekB
 		tvAboutConfig			=   (TextView) 		findViewById(R.id.itvAboutConfig);
 		tvAboutInfoConfig		=   (TextView) 		findViewById(R.id.itvAboutInfoConfig);
 
-		llPubConfig				=   (LinearLayout) 	findViewById(R.id.illPubConfig);
-
 		// Присваиваем обработчик кнопкам
 		ibBackConfig.setOnClickListener(this);
 		sbTextSize.setOnSeekBarChangeListener(this);
@@ -97,64 +90,8 @@ public class Config extends Activity implements OnClickListener, SeekBar.OnSeekB
 		ibMainLanguageRomanian.setOnClickListener(this);
 		ibMainLanguageRussian.setOnClickListener(this);
 
-
-
-		//-- Показати или скрыть рекламу
-		VisibleOrGonePub();
-
 		// Загрузка данных
 		LoadDate();
-	}
-
-	public void VisibleOrGonePub()
-	{
-		try
-		{
-			SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
-			isViewPub  			= myPrefs.getBoolean("isViewPub", true); // true - показать рекламу, false -  скрыти рекламу
-
-			if(isViewPub == true)
-			{
-				llPubConfig.setVisibility(View.GONE);
-
-				//Поиск AdView в качестве ресурса и загрузка запроса.
-				AdViewConfig = (AdView)this.findViewById(R.id.iAdViewConfig);
-				AdRequest adRequest = new AdRequest.Builder().build();
-				AdViewConfig.loadAd(adRequest);
-
-				AdViewConfig.setAdListener(new AdListener()
-				{
-					//Вызывается при получении объявление.
-					public void onAdLoaded()
-					{
-						llPubConfig.setVisibility(View.VISIBLE);
-					}
-
-					// Вызывается, когда пользователь собирается вернуться в приложение после нажатия на объявление
-					public void onAdClosed()
-					{
-						llPubConfig.setVisibility(View.GONE);
-
-						if(AdViewConfig != null) {AdViewConfig.destroy();}
-
-						isViewPub = false;
-						SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
-						Editor eddPub = myPrefs.edit();
-						eddPub.putBoolean("isViewPub", isViewPub);
-						eddPub.commit();
-					}
-
-					//Вызывается, когда объявление оставляет приложение (например, пойти в браузере).
-					public void onAdLeftApplication()
-					{}
-				});
-			}
-			else
-			{
-				llPubConfig.setVisibility(View.GONE);
-			}
-		}
-		catch (Exception $e) { }
 	}
 
 	private void LoadDate()

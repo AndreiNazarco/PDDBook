@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Day -->
+    <color name="colorPrimaryDark">#367A09</color> <!-- StatusBar BackgroundColor -->
+    <color name="colorPrimary">#59A214</color>     <!-- ActionBar BackgroundColor -->
+    <color name="colorAccent">#FFFFFF</color>
+
+    <!-- CardView -->
+    <color name="gradientDayLeft">#FFFFFF</color>
+    <color name="gradientDayRight">#F6FFEE</color>
+
+    <color name="cDayText">#000000</color>
+    <color name="cDayTextDescription">#605A5D</color>
+
+    <color name="cDayBG">#F3F3F3</color>
+
+
+    <!-- Night -->
+    <color name="cNightPrimaryDark">#050505</color> <!-- StatusBar BackgroundColor -->
+    <color name="cNightPrimary">#1E1E1E</color>     <!-- ActionBar BackgroundColor -->
+    <color name="cNightAccent">#020202</color>
+
+    <!-- CardView -->
+    <color name="gradientNightLeft">#3E3E3E</color>
+    <color name="gradientNightRight">#3E3E3E</color>
+
+    <color name="cNightText">#FAF7E9</color>
+    <color name="cNightTextDescription">#DCEBCD</color>
+
+    <color name="cNightBG">#2C2C2C</color>
+
+</resources>

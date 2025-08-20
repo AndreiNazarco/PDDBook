@@ -37,7 +37,9 @@
     <string name="description">Ediție didactică</string>
     <string name="description_all">700 de întrebări și teste (tematice) pentru pregătirea de examenul teoretic și obținerea permisului de conducere</string>
     <string name="pdd_moldova_free">\nPoate fi descarcat de pe referinte:</string>
-     
+
+    <string name="subject_empty">Această categorie este goală!</string>
+
     <string name="yes">Da</string>
     <string name="close">Închide</string> 
     

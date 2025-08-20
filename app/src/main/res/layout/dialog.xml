@@ -11,7 +11,7 @@
     	android:layout_height="wrap_content"
     	android:scrollbars="vertical"
     	android:fillViewport="true"
-    	android:layout_weight="1"> 
+    	android:layout_weight="1">
     	
     	<LinearLayout
         	android:id="@+id/llDialog"
@@ -19,9 +19,7 @@
         	android:layout_height="wrap_content"
         	android:orientation="vertical"
         	android:layout_weight="1"
-        	android:layout_margin="10dp">
+        	android:layout_margin="20dp">
      	</LinearLayout>  
 	</ScrollView>
-
-    
 </LinearLayout>

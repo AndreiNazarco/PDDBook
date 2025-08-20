@@ -2,10 +2,6 @@ package com.pdd.book;
 
 import java.util.Locale;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,8 +18,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -33,9 +27,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
 	ImageButton		ibLanguageRomaniaMain;
 	ImageButton		ibLanguageRussianMain;
-
-	LinearLayout	llPubMain;
-	AdView AdViewMain;
 
 	DBHelper 	 	dbHelper;
 
@@ -52,8 +43,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		// Найдем View-элементы
 		ibLanguageRomaniaMain			=   (ImageButton) 	findViewById(R.id.iibLanguageRomaniaMain);
 		ibLanguageRussianMain			=   (ImageButton) 	findViewById(R.id.iibLanguageRussianMain);
-
-		llPubMain						=   (LinearLayout) 	findViewById(R.id.illPubMain);
 
 		// Присваиваем обработчик кнопкам
 		ibLanguageRomaniaMain.setOnClickListener(this);
@@ -131,8 +120,6 @@ public class MainActivity extends Activity implements OnClickListener {
 				ibLanguageRomaniaMain.setVisibility(View.GONE);
 				ibLanguageRussianMain.setVisibility(View.GONE);
 
-				llPubMain.setVisibility(View.GONE);
-
 				createAndShowDialog(getString(R.string.sql_lite_exception), getString(R.string.recommendation));
 				return;
 			}
@@ -150,15 +137,10 @@ public class MainActivity extends Activity implements OnClickListener {
 		if(isSelectLanguage == false)
 		{
 			Intent intent = new Intent();
-			intent.setClass(MainActivity.this, Cuprins.class);
+			intent.setClass(MainActivity.this, Content.class);
 			startActivity(intent);
 			finish();
 			overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);
-		}
-		else
-		{
-			//-- Показати или скрыть рекламу
-			VisibleOrGonePub();
 		}
 	}
 
@@ -185,57 +167,6 @@ public class MainActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	public void VisibleOrGonePub()
-	{
-		try
-		{
-			SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
-			isViewPub = myPrefs.getBoolean("isViewPub", true); // true - показать рекламу, false -  скрыти рекламу
-
-			if(isViewPub == true)
-			{
-				llPubMain.setVisibility(View.GONE);
-
-				//Поиск AdView в качестве ресурса и загрузка запроса.
-				AdViewMain = (AdView)this.findViewById(R.id.iAdViewMain);
-				AdRequest adRequest = new AdRequest.Builder().build();
-				AdViewMain.loadAd(adRequest);
-
-				AdViewMain.setAdListener(new AdListener()
-				{
-					//Вызывается при получении объявление.
-					public void onAdLoaded()
-					{
-						llPubMain.setVisibility(View.VISIBLE);
-					}
-
-					// Вызывается, когда пользователь собирается вернуться в приложение после нажатия на объявление
-					public void onAdClosed()
-					{
-						llPubMain.setVisibility(View.GONE);
-
-						if(AdViewMain != null) {AdViewMain.destroy();}
-
-						isViewPub = false;
-						SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
-						Editor eddPub = myPrefs.edit();
-						eddPub.putBoolean("isViewPub", isViewPub);
-						eddPub.commit();
-					}
-
-					//Вызывается, когда объявление оставляет приложение (например, пойти в браузере).
-					public void onAdLeftApplication()
-					{}
-				});
-			}
-			else
-			{
-				llPubMain.setVisibility(View.GONE);
-			}
-		}
-		catch (Exception $e) { }
-	}
-
 	public void onClick(View v)
 	{
 		Intent intent;
@@ -252,7 +183,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				edd.commit();
 
 				intent = new Intent();
-				intent.setClass(MainActivity.this, Cuprins.class);
+				intent.setClass(MainActivity.this, Content.class);
 				startActivity(intent);
 				finish();
 				overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);
@@ -266,7 +197,7 @@ public class MainActivity extends Activity implements OnClickListener {
 				edd.commit();
 
 				intent = new Intent();
-				intent.setClass(MainActivity.this, Cuprins.class);
+				intent.setClass(MainActivity.this, Content.class);
 				startActivity(intent);
 				finish();
 				overridePendingTransition(R.anim.slide_left_in, R.anim.slide_left_out);

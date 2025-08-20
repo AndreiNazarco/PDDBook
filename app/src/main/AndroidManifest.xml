@@ -31,7 +31,7 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-5682735460136333~1252610003"/>
 
-         <activity android:name="Cuprins"></activity>
+         <activity android:name="Content"></activity>
          <activity android:name="Description"></activity>
          <activity android:name="Config"></activity>
     </application>

@@ -132,28 +132,7 @@ public class DBHelper extends SQLiteOpenHelper
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) 
 	{
-		if((oldVersion == 1  && newVersion ==  2) ||
-		   (oldVersion <= 2  && newVersion ==  3) ||
-		   (oldVersion <= 3  && newVersion ==  4) ||
-		   (oldVersion <= 4  && newVersion ==  5) ||
-		   (oldVersion <= 5  && newVersion ==  6) ||
-		   (oldVersion <= 6  && newVersion ==  7) ||
-		   (oldVersion <= 7  && newVersion ==  8) ||
-		   (oldVersion <= 8  && newVersion ==  9) ||
-		   (oldVersion <= 9  && newVersion == 10) ||
-		   (oldVersion <= 10 && newVersion == 11) ||
-		   (oldVersion <= 11 && newVersion == 12) ||
-		   (oldVersion <= 12 && newVersion == 13) ||
-		   (oldVersion <= 13 && newVersion == 14) ||
-		   (oldVersion <= 14 && newVersion == 15) ||
-		   (oldVersion <= 15 && newVersion == 16) ||
-		   (oldVersion <= 16 && newVersion == 17) ||
-		   (oldVersion <= 17 && newVersion == 18) ||
-		   (oldVersion <= 18 && newVersion == 19) ||
-		   (oldVersion <= 19 && newVersion == 20) ||
-		   (oldVersion <= 20 && newVersion == 21) ||
-		   (oldVersion <= 21 && newVersion == 22) ||
-		   (oldVersion <= 22 && newVersion == 23) ||
+		if((oldVersion <= 22 && newVersion == 23) ||
 		   (oldVersion <= 23 && newVersion == 24) ||
 		   (oldVersion <= 24 && newVersion == 25) )
 		{	
