@@ -5,10 +5,16 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#ffffff"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/vStatusSpacerContent"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:background="#59a214" />
 
     <LinearLayout
+        android:id="@+id/illHeaderContent"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:background="#59a214"

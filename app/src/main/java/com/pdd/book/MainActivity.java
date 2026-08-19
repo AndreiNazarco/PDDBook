@@ -13,11 +13,18 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ImageButton;
+
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 public class MainActivity extends Activity implements OnClickListener {
 
@@ -38,7 +45,28 @@ public class MainActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE); //скрываем заголовок
+
 		setContentView(R.layout.main);
+
+		WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+		getWindow().setStatusBarColor(Color.WHITE);
+		getWindow().setNavigationBarColor(Color.WHITE);
+		final View decorViewMain = getWindow().getDecorView();
+		final WindowInsetsControllerCompat insetsControllerMain = new WindowInsetsControllerCompat(getWindow(), decorViewMain);
+		insetsControllerMain.setAppearanceLightStatusBars(true);
+		insetsControllerMain.setAppearanceLightNavigationBars(true);
+		decorViewMain.setSystemUiVisibility(decorViewMain.getSystemUiVisibility()
+				| View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+		final View scrollViewMain = findViewById(R.id.isvMain);
+		ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+			insetsControllerMain.setAppearanceLightStatusBars(true);
+			insetsControllerMain.setAppearanceLightNavigationBars(true);
+			decorViewMain.setSystemUiVisibility(decorViewMain.getSystemUiVisibility()
+					| View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+			Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+			scrollViewMain.setPadding(scrollViewMain.getPaddingLeft(), scrollViewMain.getPaddingTop(), scrollViewMain.getPaddingRight(), systemBars.bottom);
+			return insets;
+		});
 
 		// Найдем View-элементы
 		ibLanguageRomaniaMain			=   (ImageButton) 	findViewById(R.id.iibLanguageRomaniaMain);

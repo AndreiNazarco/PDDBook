@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/illRootConfig"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#ffffff"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/vStatusSpacerConfig"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:background="#59a214" />
 
     <LinearLayout
+        android:id="@+id/illHeaderConfig"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:background="#59a214"
@@ -51,67 +58,6 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
-            <LinearLayout
-                android:id="@+id/illExampleText"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:id="@+id/itvExampleText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|center_horizontal"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/example_text"
-                    android:textColor="#000000" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/itvFontSize"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:background="#cbe5b3"
-                android:gravity="center_vertical|center_horizontal"
-                android:text="@string/font_size"
-                android:textColor="#605a5d" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/itvTextLess"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="10dp"
-                    android:layout_weight="1"
-                    android:text="@string/less"
-                    android:textColor="#605a5d"
-                    android:textSize="12dp" />
-
-                <TextView
-                    android:id="@+id/itvTextMore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:layout_marginRight="10dp"
-                    android:text="@string/more"
-                    android:textColor="#605a5d"
-                    android:textSize="12dp" />
-            </LinearLayout>
-
-            <SeekBar
-                android:id="@+id/isbTextSize"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:max="30"
-                />
 
             <TextView
                 android:id="@+id/itvDayNight"

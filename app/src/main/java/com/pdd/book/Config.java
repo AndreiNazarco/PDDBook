@@ -10,15 +10,22 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class Config extends Activity implements OnClickListener, SeekBar.OnSeekBarChangeListener {
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+
+public class Config extends Activity implements OnClickListener {
 
 	public static boolean 	isViewPub 			= true;
 	public static String 	isLanguage 			= "";
@@ -27,14 +34,6 @@ public class Config extends Activity implements OnClickListener, SeekBar.OnSeekB
 
 	ImageButton 	ibBackConfig;
 	TextView 		tvNameConfig;
-
-	LinearLayout 	llExampleText;
-	TextView 		tvExampleText;
-
-	TextView    	tvFontSize;
-	TextView    	tvTextLess;
-	TextView    	tvTextMore;
-	SeekBar     	sbTextSize;
 
 	TextView    	tvDayNight;
 	RadioButton 	rbDayDesc;
@@ -51,25 +50,48 @@ public class Config extends Activity implements OnClickListener, SeekBar.OnSeekB
 
 	Resources   	localResources;
 
+	private View decorViewConfig;
+	private WindowInsetsControllerCompat insetsControllerConfig;
+	private View vStatusSpacer;
+	private View headerConfig;
+	private View rootConfig;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE); //скрываем заголовок
+
 		setContentView(R.layout.config);
 
+		WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+		getWindow().setNavigationBarColor(Color.WHITE);
+		decorViewConfig = getWindow().getDecorView();
+		insetsControllerConfig = new WindowInsetsControllerCompat(getWindow(), decorViewConfig);
+		decorViewConfig.setSystemUiVisibility(decorViewConfig.getSystemUiVisibility()
+				| View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+
+		vStatusSpacer = findViewById(R.id.vStatusSpacerConfig);
+		headerConfig = findViewById(R.id.illHeaderConfig);
+		final ViewGroup scrollViewForInsets = findViewById(R.id.idScrollOption);
+		scrollViewForInsets.setClipToPadding(false);
+		ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+			applyStatusBarTheme();
+			decorViewConfig.setSystemUiVisibility(decorViewConfig.getSystemUiVisibility()
+					| View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+			Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+			ViewGroup.LayoutParams lp = vStatusSpacer.getLayoutParams();
+			lp.height = systemBars.top;
+			vStatusSpacer.setLayoutParams(lp);
+			scrollViewForInsets.setPadding(scrollViewForInsets.getPaddingLeft(), scrollViewForInsets.getPaddingTop(), scrollViewForInsets.getPaddingRight(), systemBars.bottom);
+			return insets;
+		});
+
 		// Найдем View-элементы
+		rootConfig				=   findViewById(R.id.illRootConfig);
 		ibBackConfig			=   (ImageButton) 	findViewById(R.id.iibBackConfig);
 		tvNameConfig 			=   (TextView) 		findViewById(R.id.itvNameConfig);
-
-		llExampleText			=   (LinearLayout) 	findViewById(R.id.illExampleText);
-		tvExampleText			=   (TextView) 		findViewById(R.id.itvExampleText);
-
-		tvFontSize				=   (TextView) 		findViewById(R.id.itvFontSize);
-		tvTextLess				=   (TextView) 		findViewById(R.id.itvTextLess);
-		tvTextMore				=   (TextView) 		findViewById(R.id.itvTextMore);
-		sbTextSize				=   (SeekBar) 		findViewById(R.id.isbTextSize);
 
 		tvDayNight				=   (TextView) 		findViewById(R.id.itvDayNight);
 		rbDayDesc				=   (RadioButton) 	findViewById(R.id.irbDayDesc);
@@ -84,7 +106,6 @@ public class Config extends Activity implements OnClickListener, SeekBar.OnSeekB
 
 		// Присваиваем обработчик кнопкам
 		ibBackConfig.setOnClickListener(this);
-		sbTextSize.setOnSeekBarChangeListener(this);
 		rbDayDesc.setOnClickListener(this);
 		dbNightDesc.setOnClickListener(this);
 		ibMainLanguageRomanian.setOnClickListener(this);
@@ -101,6 +122,8 @@ public class Config extends Activity implements OnClickListener, SeekBar.OnSeekB
 		text_size 		          = Integer.valueOf(myPrefs.getString("text_size", "10"));
 		day_night 				  = myPrefs.getBoolean("day_night", true); // true - day, false - night
 
+		applyStatusBarTheme();
+
 		// Язык пользователя
 		Resources baseResources = getResources();
 		Locale locale = new Locale(isLanguage);
@@ -112,12 +135,6 @@ public class Config extends Activity implements OnClickListener, SeekBar.OnSeekB
 		// Наименование программы
 		tvNameConfig.setText(localResources.getString(R.string.congif));
 
-		tvExampleText.setText(localResources.getString(R.string.example_text));
-
-		tvFontSize.setText(localResources.getString(R.string.font_size));
-		tvTextLess.setText(localResources.getString(R.string.less));
-		tvTextMore.setText(localResources.getString(R.string.more));
-
 		tvDayNight.setText(localResources.getString(R.string.day_night));
 		rbDayDesc.setText(localResources.getString(R.string.day));
 		dbNightDesc.setText(localResources.getString(R.string.night));
@@ -127,49 +144,50 @@ public class Config extends Activity implements OnClickListener, SeekBar.OnSeekB
 		tvAboutConfig.setText(localResources.getString(R.string.about));
 		tvAboutInfoConfig.setText(localResources.getString(R.string.about_info));
 
-		tvExampleText.setTextSize(text_size);
-		sbTextSize.setProgress(text_size - 10);
-
 		if(day_night == false)
 		{
 			rbDayDesc.setChecked(false);
 			dbNightDesc.setChecked(true);
-			tvExampleText.setTextColor(Color.parseColor("#ffffff"));
-
-			llExampleText.setBackgroundColor(Color.parseColor("#000000"));
-			tvExampleText.setBackgroundColor(Color.parseColor("#000000"));
 		}
 		else
 		{
 			rbDayDesc.setChecked(true);
 			dbNightDesc.setChecked(false);
-			tvExampleText.setTextColor(Color.parseColor("#000000"));
-
-			llExampleText.setBackgroundColor(Color.parseColor("#ffffff"));
-			tvExampleText.setBackgroundColor(Color.parseColor("#ffffff"));
 		}
 
+		applyBodyTheme();
 	}
 
+	private void applyBodyTheme() {
+		int bgMain = ContextCompat.getColor(this, day_night ? R.color.cDayBG : R.color.cNightBG);
+		int textMain = ContextCompat.getColor(this, day_night ? R.color.cDayText : R.color.cNightText);
+		int sectionBg = ContextCompat.getColor(this, day_night ? R.color.cDayCaptionTextBG : R.color.cNightCaptionTextBG);
+		int sectionText = ContextCompat.getColor(this, day_night ? R.color.cDayCaptionText : R.color.cNightCaptionText);
 
-	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-	{
-		// TODO Auto-generated method stub
-	}
-
-	public void onStartTrackingTouch(SeekBar seekBar)
-	{
-		// TODO Auto-generated method stub
-	}
-
-	public void onStopTrackingTouch(SeekBar seekBar)
-	{
-		tvExampleText.setTextSize(10 + sbTextSize.getProgress());
-
-		SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
-		Editor edd = myPrefs.edit();
-		edd.putString("text_size", String.valueOf(10 + sbTextSize.getProgress()));
-		edd.commit();
+		if (rootConfig != null) {
+			rootConfig.setBackgroundColor(bgMain);
+		}
+		if (tvDayNight != null) {
+			tvDayNight.setBackgroundColor(sectionBg);
+			tvDayNight.setTextColor(sectionText);
+		}
+		if (rbDayDesc != null) {
+			rbDayDesc.setTextColor(textMain);
+		}
+		if (dbNightDesc != null) {
+			dbNightDesc.setTextColor(textMain);
+		}
+		if (tvLanguageConfig != null) {
+			tvLanguageConfig.setBackgroundColor(sectionBg);
+			tvLanguageConfig.setTextColor(sectionText);
+		}
+		if (tvAboutConfig != null) {
+			tvAboutConfig.setBackgroundColor(sectionBg);
+			tvAboutConfig.setTextColor(sectionText);
+		}
+		if (tvAboutInfoConfig != null) {
+			tvAboutInfoConfig.setTextColor(textMain);
+		}
 	}
 
 	public void onClick(View v)
@@ -185,23 +203,23 @@ public class Config extends Activity implements OnClickListener, SeekBar.OnSeekB
 				break;
 
 			case R.id.irbDayDesc:
-				llExampleText.setBackgroundColor(Color.parseColor("#ffffff"));
-				tvExampleText.setBackgroundColor(Color.parseColor("#ffffff"));
-				tvExampleText.setTextColor(Color.parseColor("#000000"));
-
 				Editor edd = myPrefs.edit();
 				edd.putBoolean("day_night", true);
 				edd.commit();
+
+				day_night = true;
+				applyStatusBarTheme();
+				applyBodyTheme();
 				break;
 
 			case R.id.idbNightDesc:
-				llExampleText.setBackgroundColor(Color.parseColor("#000000"));
-				tvExampleText.setBackgroundColor(Color.parseColor("#000000"));
-				tvExampleText.setTextColor(Color.parseColor("#ffffff"));
-
 				Editor edn = myPrefs.edit();
 				edn.putBoolean("day_night", false);
 				edn.commit();
+
+				day_night = false;
+				applyStatusBarTheme();
+				applyBodyTheme();
 				break;
 
 			case R.id.iibMainLanguageRomanian:
@@ -229,5 +247,35 @@ public class Config extends Activity implements OnClickListener, SeekBar.OnSeekB
 	{
 		finish();
 		overridePendingTransition(R.anim.slide_right_in, R.anim.slide_right_out);
+	}
+
+	private void applyStatusBarTheme() {
+		int statusBarColor = ContextCompat.getColor(this, day_night ? R.color.colorPrimaryDark : R.color.cNightPrimaryDark);
+		int headerColor = ContextCompat.getColor(this, day_night ? R.color.colorPrimary : R.color.cNightPrimary);
+		getWindow().setStatusBarColor(statusBarColor);
+		if (headerConfig != null) {
+			headerConfig.setBackgroundColor(headerColor);
+		}
+		if (vStatusSpacer != null) {
+			vStatusSpacer.setBackgroundColor(statusBarColor);
+		}
+		if (tvNameConfig != null) {
+			tvNameConfig.setBackgroundColor(headerColor);
+		}
+		if (ibBackConfig != null) {
+			ibBackConfig.setBackgroundColor(headerColor);
+		}
+		if (insetsControllerConfig != null) {
+			insetsControllerConfig.setAppearanceLightStatusBars(day_night);
+		}
+		if (decorViewConfig != null) {
+			int flags = decorViewConfig.getSystemUiVisibility();
+			if (day_night) {
+				flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+			} else {
+				flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+			}
+			decorViewConfig.setSystemUiVisibility(flags);
+		}
 	}
 }

@@ -22,12 +22,19 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,6 +60,11 @@ public class Content extends Activity implements OnClickListener {
 
 	LinearLayout	llPubContent;
 
+	private View decorViewContent;
+	private WindowInsetsControllerCompat insetsControllerContent;
+	private View vStatusSpacer;
+	private View headerContent;
+
 	DBHelper 	 	dbHelper;
 
 	Resources   	localResources;
@@ -63,7 +75,31 @@ public class Content extends Activity implements OnClickListener {
 	{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE); //скрываем заголовок
+
 		setContentView(R.layout.content);
+
+		WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+		getWindow().setNavigationBarColor(Color.WHITE);
+		decorViewContent = getWindow().getDecorView();
+		insetsControllerContent = new WindowInsetsControllerCompat(getWindow(), decorViewContent);
+		decorViewContent.setSystemUiVisibility(decorViewContent.getSystemUiVisibility()
+				| View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+
+		vStatusSpacer = findViewById(R.id.vStatusSpacerContent);
+		headerContent = findViewById(R.id.illHeaderContent);
+		final RecyclerView recyclerViewForInsets = findViewById(R.id.irvContent);
+		recyclerViewForInsets.setClipToPadding(false);
+		ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+			applyStatusBarTheme();
+			decorViewContent.setSystemUiVisibility(decorViewContent.getSystemUiVisibility()
+					| View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+			Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+			ViewGroup.LayoutParams lp = vStatusSpacer.getLayoutParams();
+			lp.height = systemBars.top;
+			vStatusSpacer.setLayoutParams(lp);
+			recyclerViewForInsets.setPadding(recyclerViewForInsets.getPaddingLeft(), recyclerViewForInsets.getPaddingTop(), recyclerViewForInsets.getPaddingRight(), systemBars.bottom);
+			return insets;
+		});
 
 		// Создаем объект для создания и управления версиями БД
 		dbHelper = new DBHelper(this);
@@ -123,6 +159,8 @@ public class Content extends Activity implements OnClickListener {
 		isLanguage = myPrefs.getString("isLanguage", "ro");
 		day_night = myPrefs.getBoolean("day_night", true); // true - day, false - night
 
+		applyStatusBarTheme();
+
 		// Язык пользователя
 		Resources baseResources = getResources();
 		Locale locale = new Locale(isLanguage);
@@ -135,16 +173,7 @@ public class Content extends Activity implements OnClickListener {
 		tvAppNameContent.setText(localResources.getString(R.string.app_name_full));
 
 		// День / Ночь
-		if(day_night == false)
-		{
-			// Ночь
-			llContent.setBackgroundColor(Color.parseColor("#000000"));
-		}
-		else
-		{
-			// День
-			llContent.setBackgroundColor(Color.parseColor("#ffffff"));
-		}
+		llContent.setBackgroundColor(ContextCompat.getColor(this, day_night ? R.color.cDayBG : R.color.cNightBG));
 
 		// Подключаемся к БД
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -189,7 +218,38 @@ public class Content extends Activity implements OnClickListener {
 			contentInfoList.add(ciItem);
 		}
 
-		mAdapter.notifyDataSetChanged();
+		mAdapter = new ContentRecyclerAdapter(contentInfoList);
+		mRecyclerView.setAdapter(mAdapter);
+	}
+
+	private void applyStatusBarTheme() {
+		int statusBarColor = ContextCompat.getColor(this, day_night ? R.color.colorPrimaryDark : R.color.cNightPrimaryDark);
+		int headerColor = ContextCompat.getColor(this, day_night ? R.color.colorPrimary : R.color.cNightPrimary);
+		getWindow().setStatusBarColor(statusBarColor);
+		if (headerContent != null) {
+			headerContent.setBackgroundColor(headerColor);
+		}
+		if (vStatusSpacer != null) {
+			vStatusSpacer.setBackgroundColor(statusBarColor);
+		}
+		if (tvAppNameContent != null) {
+			tvAppNameContent.setBackgroundColor(headerColor);
+		}
+		if (ibConfigContent != null) {
+			ibConfigContent.setBackgroundColor(headerColor);
+		}
+		if (insetsControllerContent != null) {
+			insetsControllerContent.setAppearanceLightStatusBars(day_night);
+		}
+		if (decorViewContent != null) {
+			int flags = decorViewContent.getSystemUiVisibility();
+			if (day_night) {
+				flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+			} else {
+				flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+			}
+			decorViewContent.setSystemUiVisibility(flags);
+		}
 	}
 
 	public void onClick(View v)

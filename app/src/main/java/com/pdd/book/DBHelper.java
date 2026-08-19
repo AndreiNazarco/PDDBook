@@ -14,7 +14,7 @@ import android.os.Build;
 public class DBHelper extends SQLiteOpenHelper
 {
 	//стандартный системный путь к базе данных приложения 
-	private static int DB_VERSION = 7; // версия БД
+	private static int DB_VERSION = 27; // версия БД
 	private static String DB_PATH;
 	private static String DB_NAME = "rcr_book.db3";
 	private SQLiteDatabase myDataBase;
@@ -132,9 +132,9 @@ public class DBHelper extends SQLiteOpenHelper
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) 
 	{
-		if((oldVersion <= 22 && newVersion == 23) ||
-		   (oldVersion <= 23 && newVersion == 24) ||
-		   (oldVersion <= 24 && newVersion == 25) )
+		if((oldVersion <= 25 && newVersion == 26) ||
+		   (oldVersion <= 26 && newVersion == 27) ||
+		   (oldVersion <= 27 && newVersion == 28) )
 		{	
 			try 
 			{	

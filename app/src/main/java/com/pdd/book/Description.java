@@ -23,7 +23,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.Window;
 import android.view.View.OnClickListener;
@@ -41,6 +43,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
+
 public class Description extends Activity implements OnClickListener  {
 
 	public static boolean 	isViewPub 			= true;
@@ -53,6 +62,14 @@ public class Description extends Activity implements OnClickListener  {
 	private float x1, x2;
 	private final int MIN_DISTANCE = 150; // минимальная дистанция для свайпа
 	private GestureDetector gestureDetector;
+	private ScaleGestureDetector webViewScaleDetector;
+	private float webViewTextSizeFloat = 10f;
+
+	private int bottomInsetDp = 0;
+	private View decorViewDesc;
+	private WindowInsetsControllerCompat insetsControllerDesc;
+	private View vStatusSpacer;
+	private View headerDesc;
 
 	ImageButton  	ibBackDesc;
 	ImageButton  	ibConfigDesc;
@@ -77,9 +94,36 @@ public class Description extends Activity implements OnClickListener  {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE); //скрываем заголовок
+
 		setContentView(R.layout.description);
 
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+		WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+		getWindow().setNavigationBarColor(Color.WHITE);
+		decorViewDesc = getWindow().getDecorView();
+		insetsControllerDesc = new WindowInsetsControllerCompat(getWindow(), decorViewDesc);
+		decorViewDesc.setSystemUiVisibility(decorViewDesc.getSystemUiVisibility()
+				| View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+
+		vStatusSpacer = findViewById(R.id.vStatusSpacerDesc);
+		headerDesc = findViewById(R.id.illCaptionDesc);
+		final View webViewForInsets = findViewById(R.id.iwvHTML);
+		ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content), (v, insets) -> {
+			applyStatusBarTheme();
+			decorViewDesc.setSystemUiVisibility(decorViewDesc.getSystemUiVisibility()
+					| View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+			Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+			ViewGroup.LayoutParams lp = vStatusSpacer.getLayoutParams();
+			lp.height = systemBars.top;
+			vStatusSpacer.setLayoutParams(lp);
+			webViewForInsets.setPadding(webViewForInsets.getPaddingLeft(), webViewForInsets.getPaddingTop(), webViewForInsets.getPaddingRight(), systemBars.bottom);
+			bottomInsetDp = (int) (systemBars.bottom / getResources().getDisplayMetrics().density);
+			if (webView != null) {
+				applyThemeToWebView();
+			}
+			return insets;
+		});
 
 		// Создаем объект для создания и управления версиями БД
 		dbHelper = new DBHelper(this);
@@ -98,7 +142,30 @@ public class Description extends Activity implements OnClickListener  {
 		webView 	      	= (WebView) 		findViewById(R.id.iwvHTML);
 
 		gestureDetector = new GestureDetector(this, new GestureListener());
-		webView.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
+		webViewScaleDetector = new ScaleGestureDetector(this, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+			@Override
+			public boolean onScale(ScaleGestureDetector detector) {
+				webViewTextSizeFloat *= detector.getScaleFactor();
+				if (webViewTextSizeFloat < 10f) {
+					webViewTextSizeFloat = 10f;
+				}
+				if (webViewTextSizeFloat > 40f) {
+					webViewTextSizeFloat = 40f;
+				}
+				text_size = Math.round(webViewTextSizeFloat);
+				webView.getSettings().setDefaultFontSize(text_size);
+				return true;
+			}
+		});
+		webView.setOnTouchListener((v, event) -> {
+			webViewScaleDetector.onTouchEvent(event);
+			gestureDetector.onTouchEvent(event);
+			if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+				SharedPreferences myPrefs = getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
+				myPrefs.edit().putString("text_size", String.valueOf(text_size)).apply();
+			}
+			return false;
+		});
 
 		// Присваиваем обработчик кнопкам
 		ibBackDesc.setOnClickListener(this);
@@ -125,6 +192,9 @@ public class Description extends Activity implements OnClickListener  {
 		day_night 				  = myPrefs.getBoolean("day_night", true); // true - day, false - night
 		text_size 				  = Integer.valueOf(myPrefs.getString("text_size", "10"));
 		isCaption 				  = myPrefs.getInt("isCaption", 0);
+		webViewTextSizeFloat 	  = text_size;
+
+		applyStatusBarTheme();
 
 		//Язык пользователя
 		Resources baseResources = getResources();
@@ -227,11 +297,7 @@ public class Description extends Activity implements OnClickListener  {
 
 							LinearLayout lDialogIndex = (LinearLayout) dialog.findViewById(R.id.llDialogIndex);
 
-							if (day_night == false) {
-								lDialogIndex.setBackgroundColor(Color.parseColor("#000000"));
-							} else {
-								lDialogIndex.setBackgroundColor(Color.parseColor("#ffffff"));
-							}
+							lDialogIndex.setBackgroundColor(ContextCompat.getColor(Description.this, day_night ? R.color.cDayBG : R.color.cNightBG));
 
 							for (int I = 0; I <= url.length(); I++) {
 								if ((url.length() - I >= 6) && (url.substring(I, I + 6).toLowerCase().compareTo("image_") == 0)) {
@@ -302,11 +368,7 @@ public class Description extends Activity implements OnClickListener  {
 									newTextRasp.setText(strValue);
 									newTextRasp.setPadding(0, 0, 10, 0);
 
-									if (day_night == false) {
-										newTextRasp.setTextColor(Color.parseColor("#ffffff"));
-									} else {
-										newTextRasp.setTextColor(Color.parseColor("#000000"));
-									}
+									newTextRasp.setTextColor(ContextCompat.getColor(Description.this, day_night ? R.color.cDayText : R.color.cNightText));
 									lDialog.addView(newTextRasp, lParams);
 								}
 							}
@@ -316,11 +378,7 @@ public class Description extends Activity implements OnClickListener  {
 								TextView newTextRasp = new TextView(Description.this);
 								newTextRasp.setText(localResources.getString(R.string.image_not_found));
 
-								if (day_night == false) {
-									newTextRasp.setTextColor(Color.parseColor("#ffffff"));
-								} else {
-									newTextRasp.setTextColor(Color.parseColor("#000000"));
-								}
+								newTextRasp.setTextColor(ContextCompat.getColor(Description.this, day_night ? R.color.cDayText : R.color.cNightText));
 
 								lDialog.addView(newTextRasp, lParams);
 							}
@@ -332,11 +390,7 @@ public class Description extends Activity implements OnClickListener  {
 							Button newButton1 = new Button(Description.this);
 							newButton1.setText(localResources.getString(R.string.close));
 
-							if (day_night == false) {
-								newButton1.setTextColor(Color.parseColor("#ffffff"));
-							} else {
-								newButton1.setTextColor(Color.parseColor("#000000"));
-							}
+							newButton1.setTextColor(ContextCompat.getColor(Description.this, day_night ? R.color.cDayText : R.color.cNightText));
 
 							newButton1.setOnClickListener(new OnClickListener() {
 								public void onClick(View v) {
@@ -364,7 +418,7 @@ public class Description extends Activity implements OnClickListener  {
 
 			WebSettings settings = webView.getSettings();
 			settings.setDefaultFontSize(text_size);
-			webView.setBackgroundColor(day_night ? Color.WHITE : Color.BLACK);
+			webView.setBackgroundColor(ContextCompat.getColor(this, day_night ? R.color.cDayBG : R.color.cNightBG));
 			settings.setAllowFileAccess(true);
 			settings.setJavaScriptEnabled(true);
 			settings.setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
@@ -376,10 +430,43 @@ public class Description extends Activity implements OnClickListener  {
 			is.read(buffer);
 			is.close();
 			String content = new String(buffer);
-			content = content.replace("<head>", "<head><style type=\"text/css\">body{color: " + (day_night ? "#000000" : "#ffffff") + "; background-color: " + (day_night ? "#ffffff" : "#000000") + ";}</style>");
+			content = content.replace("<head>", "<head><style type=\"text/css\">body{color: " + (day_night ? "#000000" : "#FAF7E9") + "; background-color: " + (day_night ? "#F3F3F3" : "#2C2C2C") + "; padding-bottom: " + bottomInsetDp + "px; box-sizing: border-box;}</style>");
 			webView.loadDataWithBaseURL("file:///android_res/drawable/", content, "text/html", "utf-8", null);
 		}
 		catch (Exception $e){}
+	}
+
+	private void applyStatusBarTheme() {
+		int statusBarColor = ContextCompat.getColor(this, day_night ? R.color.colorPrimaryDark : R.color.cNightPrimaryDark);
+		int headerColor = ContextCompat.getColor(this, day_night ? R.color.colorPrimary : R.color.cNightPrimary);
+		getWindow().setStatusBarColor(statusBarColor);
+		if (headerDesc != null) {
+			headerDesc.setBackgroundColor(headerColor);
+		}
+		if (vStatusSpacer != null) {
+			vStatusSpacer.setBackgroundColor(statusBarColor);
+		}
+		if (tvCaptionDesc != null) {
+			tvCaptionDesc.setBackgroundColor(headerColor);
+		}
+		if (ibBackDesc != null) {
+			ibBackDesc.setBackgroundColor(headerColor);
+		}
+		if (ibConfigDesc != null) {
+			ibConfigDesc.setBackgroundColor(headerColor);
+		}
+		if (insetsControllerDesc != null) {
+			insetsControllerDesc.setAppearanceLightStatusBars(day_night);
+		}
+		if (decorViewDesc != null) {
+			int flags = decorViewDesc.getSystemUiVisibility();
+			if (day_night) {
+				flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+			} else {
+				flags &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+			}
+			decorViewDesc.setSystemUiVisibility(flags);
+		}
 	}
 
 	private void saveCaptionIndex() {
@@ -390,8 +477,10 @@ public class Description extends Activity implements OnClickListener  {
 	}
 
 	private void applyThemeToWebView() {
-		String js = "document.body.style.backgroundColor = '" + (day_night ? "#ffffff" : "#000000") + "';" +
-				"document.body.style.color = '" + (day_night ? "#000000" : "#ffffff") + "';";
+		String js = "document.body.style.backgroundColor = '" + (day_night ? "#F3F3F3" : "#2C2C2C") + "';" +
+				"document.body.style.color = '" + (day_night ? "#000000" : "#FAF7E9") + "';" +
+				"document.body.style.paddingBottom = '" + bottomInsetDp + "px';" +
+				"document.body.style.boxSizing = 'border-box';";
 		webView.evaluateJavascript(js, null);
 	}
 
